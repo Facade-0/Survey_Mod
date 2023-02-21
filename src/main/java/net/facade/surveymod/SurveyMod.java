@@ -1,6 +1,10 @@
 package net.facade.surveymod;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.facade.surveymod.event.TestEventHandler;
+import net.facade.surveymod.event.TestTickEventHandler;
 import net.facade.surveymod.networking.ModMessages;
 import net.facade.surveymod.util.ModRegistries;
 import org.slf4j.Logger;
@@ -15,5 +19,8 @@ public class SurveyMod implements ModInitializer {
 
 		ModRegistries.registerCommands();
 		ModMessages.registerC2SPackets();
+
+		AttackEntityCallback.EVENT.register(new TestEventHandler());
+		ServerTickEvents.END_SERVER_TICK.register(new TestTickEventHandler());
 	}
 }
