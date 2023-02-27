@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.facade.surveymod.SurveyMod;
 import net.facade.surveymod.networking.packet.MovePacket;
+import net.facade.surveymod.networking.packet.SurveySyncDataS2CPacket;
 import net.minecraft.util.Identifier;
 
 public class ModMessages {
@@ -12,12 +13,15 @@ public class ModMessages {
 
     public static final Identifier MOVE_S2C = new Identifier(SurveyMod.MOD_ID, "move_s2c");
 
+    public static final Identifier SURVEY_SYNC_ID = new Identifier(SurveyMod.MOD_ID, "survey_sync");
+
     public static void registerC2SPackets(){
         //ServerPlayNetworking.registerGlobalReceiver(EXAMPLE_ID_C2S, ExampleC2SPacket::receive);
     }
     public static void registerS2CPackets() {
         //ClientPlayNetworking.registerGlobalReceiver(EXAMPLE_ID_S2C, ExampleS2CPacket::receive);
         ClientPlayNetworking.registerGlobalReceiver(MOVE_S2C, MovePacket::receive);
+        ClientPlayNetworking.registerGlobalReceiver(SURVEY_SYNC_ID, SurveySyncDataS2CPacket::receive);
     }
 
 }

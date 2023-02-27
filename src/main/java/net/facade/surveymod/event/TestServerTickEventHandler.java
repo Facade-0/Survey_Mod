@@ -1,6 +1,8 @@
 package net.facade.surveymod.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.facade.surveymod.util.IEntityDataSaver;
+import net.facade.surveymod.util.SurveyData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -16,6 +18,7 @@ public class TestServerTickEventHandler implements ServerTickEvents.EndTick {
         List<ServerPlayerEntity> players = server.getPlayerManager().getPlayerList();
         for (ServerPlayerEntity player:players) {
             //player.sendMessageToClient(Text.literal("Tick"), false);
+            //player.sendMessageToClient(Text.literal(String.valueOf(SurveyData.getSurveyState((IEntityDataSaver) player))), false);
         }
     }
 }
