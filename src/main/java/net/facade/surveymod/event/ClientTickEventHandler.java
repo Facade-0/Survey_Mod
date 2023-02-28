@@ -7,7 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 
-public class TestClientTickEventHandler implements ClientTickEvents.EndTick {
+public class ClientTickEventHandler implements ClientTickEvents.EndTick {
     @Override
     public void onEndTick(MinecraftClient client) {
         PlayerEntity player = client.player;

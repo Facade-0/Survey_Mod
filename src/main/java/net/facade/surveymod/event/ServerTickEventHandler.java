@@ -1,15 +1,12 @@
 package net.facade.surveymod.event;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.facade.surveymod.util.IEntityDataSaver;
-import net.facade.surveymod.util.SurveyData;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 
 import java.util.List;
 
-public class TestServerTickEventHandler implements ServerTickEvents.EndTick {
+public class ServerTickEventHandler implements ServerTickEvents.EndTick {
 
     @Override
     public void onEndTick(MinecraftServer server) {
