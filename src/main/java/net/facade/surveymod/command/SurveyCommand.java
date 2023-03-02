@@ -16,9 +16,22 @@ public class SurveyCommand {
         dispatcher.register(CommandManager.literal("survey")
                 .then(CommandManager.literal("on").executes(context -> {SurveyCommand.run(context, true); return 1;}))
                 .then(CommandManager.literal("off").executes(context -> {SurveyCommand.run(context, false); return 1;}))
-                .then(CommandManager.literal("set")
+                .then(CommandManager.literal("scan")
+                    .then(CommandManager.literal("v")
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, false); return 1;})))
+                    .then(CommandManager.literal("h")
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, false); return 1;}))))
+                .then(CommandManager.literal("spiral")
+                    .then(CommandManager.literal("l")
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, false); return 1;})))
+                    .then(CommandManager.literal("r")
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, false); return 1;}))))
                 .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
-                        .executes(context -> {SurveyCommand.run(context, true); return 1;}))));
+                    .executes(context -> {SurveyCommand.run(context, true); return 1;})));
     }
 
     private static int run(CommandContext<ServerCommandSource> context, boolean state) {
@@ -27,7 +40,7 @@ public class SurveyCommand {
         String surveyParameters = context.getInput();
         player.sendMessageToClient(Text.literal(surveyParameters), false);
 
-        SurveyData.setSurveyState((IEntityDataSaver) player, state);
+        //SurveyData.setSurveyState((IEntityDataSaver) player, state);
 
         return 1;
     }
