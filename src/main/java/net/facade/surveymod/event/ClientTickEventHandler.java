@@ -12,8 +12,8 @@ public class ClientTickEventHandler implements ClientTickEvents.EndTick {
     public void onEndTick(MinecraftClient client) {
         PlayerEntity player = client.player;
         if(player != null) {
-            boolean surveyState = false;//SurveyData.getSurveyState((IEntityDataSaver) player);
-            if(surveyState) {
+            int surveyState = SurveyData.getSurveyState((IEntityDataSaver) player);
+            if(surveyState == 1) {
                 player.sendMessage(Text.literal("Tock"), false);
             }
             //player.applyMovementInput(new Vec3d(0,10,0), 10);

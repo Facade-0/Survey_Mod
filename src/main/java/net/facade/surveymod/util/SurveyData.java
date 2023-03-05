@@ -11,60 +11,53 @@ import net.minecraft.util.math.Vec3d;
 
 public class SurveyData {
 
-    private String state = "surveyState";                // boolean
-    private boolean stateValue = false;
-    private String points = "surveyPoints";              // int[]
-    private int[] pointsValue = null;
+    public static final  String SURVEYSTATE = "surveyState";                // boolean
+    public static final  String SURVEYPOINTS = "surveyPoints";              // int[]
 
-    public void setSurveyState(IEntityDataSaver player, boolean value) {
+    public static void setSurveyState(IEntityDataSaver player, int value) {
         NbtCompound nbt = player.getPersistentData();
-        boolean state = nbt.getBoolean(this.state);
+        int state = nbt.getInt(SURVEYSTATE);
         if(state != value) {
             state = value;
         }
-        this.stateValue = state;
+        int[] stateArray = {state};
 
-        nbt.putBoolean(this.state, this.stateValue);
-        syncSurvey((ServerPlayerEntity) player, this.stateValue, this.pointsValue);
+        nbt.putInt(SURVEYSTATE, state);
+        syncSurvey((ServerPlayerEntity) player, SURVEYSTATE, stateArray);
     }
 
-    public boolean getSurveyState(IEntityDataSaver player) {
+    public static int getSurveyState(IEntityDataSaver player) {
         NbtCompound nbt = player.getPersistentData();
-        boolean state = nbt.getBoolean(this.state);
-
-        return state;
+        return nbt.getInt(SURVEYSTATE);
     }
-    public void setSurveyPoints(IEntityDataSaver player, int[] points) {
+
+    public static void setSurveyPoints(IEntityDataSaver player, int[] points) {
         NbtCompound nbt = player.getPersistentData();
-        int[] currentPoint = nbt.getIntArray(this.points);
-        if(currentPoint != points) {
-            currentPoint = points;
+        int[] currentPoints = nbt.getIntArray(SURVEYPOINTS);
+        if(currentPoints != points) {
+            currentPoints = points;
         }
-        this.pointsValue = points;
+        currentPoints = points;
 
-        nbt.putIntArray(this.points, this.pointsValue);
-        syncSurvey((ServerPlayerEntity) player, this.stateValue, this.pointsValue);
+        nbt.putIntArray(SURVEYPOINTS, currentPoints);
+        syncSurvey((ServerPlayerEntity) player, SURVEYPOINTS, currentPoints);
     }
 
-    public int[] getSurveyPoints(IEntityDataSaver player) {
+    public static int[] getSurveyPoints(IEntityDataSaver player) {
         NbtCompound nbt = player.getPersistentData();
-        int[] points = nbt.getIntArray(this.points);
-
-        return points;
+        return nbt.getIntArray(SURVEYPOINTS);
     }
 
     public static Vec3d getPlayerPos(ClientPlayerEntity player) {
         return player.getPos();
     }
 
-    private static void syncSurvey(ServerPlayerEntity player, Boolean state, int[] points) {
-
-        /*switch (value.getClass()) {
-
-        }*/
+    private static void syncSurvey(ServerPlayerEntity player, String dataID, int[] dataValues) {
 
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeBoolean(state);
+        buf.writeString(dataID);
+        buf.writeIntArray(dataValues);
+
         ServerPlayNetworking.send(player, ModMessages.SURVEY_SYNC_ID, buf);
     }
 }
