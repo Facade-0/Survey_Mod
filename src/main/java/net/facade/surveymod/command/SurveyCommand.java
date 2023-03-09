@@ -18,20 +18,24 @@ public class SurveyCommand {
                 .then(CommandManager.literal("off").executes(context -> {SurveyCommand.run(context, 0); return 1;}))
                 .then(CommandManager.literal("scan")
                     .then(CommandManager.literal("v")
-                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1); return 1;})))
-                    .then(CommandManager.literal("h")
+                        .then(CommandManager.argument("offset", StringArgumentType.word())
                         .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
                             .executes(context -> {SurveyCommand.run(context, 1); return 1;}))))
+                    .then(CommandManager.literal("h")
+                        .then(CommandManager.argument("offset", StringArgumentType.word())
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, 1); return 1;})))))
                 .then(CommandManager.literal("spiral")
                     .then(CommandManager.literal("l")
-                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1); return 1;})))
-                    .then(CommandManager.literal("r")
+                        .then(CommandManager.argument("offset", StringArgumentType.word())
                         .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
                             .executes(context -> {SurveyCommand.run(context, 1); return 1;}))))
+                    .then(CommandManager.literal("r")
+                        .then(CommandManager.argument("offset", StringArgumentType.word())
+                        .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, 1); return 1;})))))
                 .then(CommandManager.argument("surveyParameters", StringArgumentType.greedyString())
-                    .executes(context -> {SurveyCommand.run(context, 1); return 1;})));                    // NEED TO ADD OFFSET PARAM SOMEWHERE
+                    .executes(context -> {SurveyCommand.run(context, 1); return 1;})));
     }
 
     private static int run(CommandContext<ServerCommandSource> context, int state) {
