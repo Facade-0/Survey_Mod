@@ -14,7 +14,7 @@ public class ClientTickEventHandler implements ClientTickEvents.EndTick {
         if(player != null) {
             int surveyState = SurveyData.getSurveyState((IEntityDataSaver) player);
             if(surveyState == 1) {
-                player.sendMessage(Text.literal("Tock"), false);
+                //player.sendMessage(Text.literal("Tock"), false);
             }
             //player.applyMovementInput(new Vec3d(0,10,0), 10);
         }
