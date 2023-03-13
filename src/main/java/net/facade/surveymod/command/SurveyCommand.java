@@ -67,13 +67,16 @@ public class SurveyCommand {
     }
 
     private static String[] parseSurveyCommand(CommandContext<ServerCommandSource> context, int parameterCount) {
-        ArrayList<String> parameterArray = new ArrayList<String>();
+        ArrayList<String> parameterArray = new ArrayList<>();
 
         String parameterPoints = context.getArgument("points", String.class);
-        String parameterOffset = "";
+        String parameterOffset;
         if(parameterCount == 2) {
             parameterOffset = context.getArgument("offset", String.class);
-            parameterArray.add(parameterOffset);
+            Pattern patternValidOffset = Pattern.compile("^\\d+$");
+            Matcher matcherValidOffset = patternValidOffset.matcher(parameterOffset);
+            if(matcherValidOffset.find()) { parameterArray.add(parameterOffset); }
+            else { return new String[] {"error", "Invalid Offset", parameterOffset}; }
         }
 
         Pattern patternValidCharacters = Pattern.compile("^[,0-9 -;]+$", Pattern.CASE_INSENSITIVE);
@@ -110,7 +113,7 @@ public class SurveyCommand {
 
     private static void parseSurveyCommandError(ServerPlayerEntity player, String[] error) {
         String errorType = error[1];
-        String errorData = "";
+        String errorData;
         SurveyData.setSurveyState((IEntityDataSaver) player, 0);
 
         switch (errorType) {
@@ -119,11 +122,15 @@ public class SurveyCommand {
                 break;
             case("Invalid Initial Coordinates"):
                 errorData = error[2];
-                player.sendMessageToClient(Text.literal("Survey Command Error: Invalid initial coordinates in command: " + errorData + "\nYou must specify a \"Y\" coordinate."), false);
+                player.sendMessageToClient(Text.literal("Survey Command Error: Invalid initial coordinates in command:\n" + errorData + "\nYou must specify a \"Y\" coordinate."), false);
                 break;
             case("Invalid Coordinates"):
                 errorData = error[2];
-                player.sendMessageToClient(Text.literal("Survey Command Error: Invalid coordinates in command: " + errorData), false);
+                player.sendMessageToClient(Text.literal("Survey Command Error: Invalid coordinates in command:\n" + errorData), false);
+                break;
+            case("Invalid Offset"):
+                errorData = error[2];
+                player.sendMessageToClient(Text.literal("Survey Command Error: Invalid offset in command:\n" + errorData + "\nThe offset must be a number."), false);
                 break;
             default:
                 player.sendMessageToClient(Text.literal("Unknown Survey Command Error"), false);
