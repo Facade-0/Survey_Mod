@@ -11,13 +11,14 @@ import net.minecraft.util.math.Vec3d;
 
 public class SurveyData {
 
-    public static final  String SURVEYSTATE = "surveyState";                // boolean
+    public static final  String SURVEYSTATE = "surveyState";                // int
     public static final  String SURVEYPOINTS = "surveyPoints";              // int[]
+    public static final  String SURVEYOFFSET = "surveyOffset";              // int
 
     public static void setSurveyState(IEntityDataSaver player, int value) {
         NbtCompound nbt = player.getPersistentData();
         int state = nbt.getInt(SURVEYSTATE);
-        if(state != value) {
+        if (state != value) {
             state = value;
         }
         int[] stateArray = {state};
@@ -34,7 +35,7 @@ public class SurveyData {
     public static void setSurveyPoints(IEntityDataSaver player, int[] points) {
         NbtCompound nbt = player.getPersistentData();
         int[] currentPoints = nbt.getIntArray(SURVEYPOINTS);
-        if(currentPoints != points) {
+        if (currentPoints != points) {
             currentPoints = points;
         }
         currentPoints = points;
@@ -46,6 +47,23 @@ public class SurveyData {
     public static int[] getSurveyPoints(IEntityDataSaver player) {
         NbtCompound nbt = player.getPersistentData();
         return nbt.getIntArray(SURVEYPOINTS);
+    }
+
+    public static void setSurveyOffset(IEntityDataSaver player, int offset) {
+        NbtCompound nbt = player.getPersistentData();
+        int currentOffset = nbt.getInt(SURVEYOFFSET);
+        if (currentOffset != offset) {
+            currentOffset = offset;
+        }
+        int[] offsetArray = {offset};
+
+        nbt.putInt(SURVEYOFFSET, currentOffset);
+        syncSurvey((ServerPlayerEntity) player, SURVEYOFFSET, offsetArray);
+    }
+
+    public static int getSurveyOffset(IEntityDataSaver player) {
+        NbtCompound nbt = player.getPersistentData();
+        return nbt.getInt(SURVEYOFFSET);
     }
 
     public static Vec3d getPlayerPos(ClientPlayerEntity player) {
