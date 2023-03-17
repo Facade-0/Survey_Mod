@@ -19,41 +19,39 @@ import java.util.regex.Pattern;
 
 public class SurveyCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
-        dispatcher.register(CommandManager.literal("survey").executes(context -> {SurveyCommand.run(context, 0, 0); return 1;})
-                .then(CommandManager.literal("on").executes(context -> {SurveyCommand.run(context, 1, 0); return 1;}))
-                .then(CommandManager.literal("off").executes(context -> {SurveyCommand.run(context, 0, 0); return 1;}))
+        dispatcher.register(CommandManager.literal("survey").executes(context -> {SurveyCommand.run(context, 0, -1); return 1;})
                 .then(CommandManager.literal("scan")
-                    .then(CommandManager.literal("v")
-                        .then(CommandManager.argument("offset", StringArgumentType.word())
-                        .then(CommandManager.argument("points", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1, 2); return 1;}))))
                     .then(CommandManager.literal("h")
                         .then(CommandManager.argument("offset", StringArgumentType.word())
                         .then(CommandManager.argument("points", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1, 2); return 1;})))))
+                            .executes(context -> {SurveyCommand.run(context, 2, 10); return 1;}))))
+                    .then(CommandManager.literal("v")
+                        .then(CommandManager.argument("offset", StringArgumentType.word())
+                        .then(CommandManager.argument("points", StringArgumentType.greedyString())
+                            .executes(context -> {SurveyCommand.run(context, 2, 11); return 1;})))))
                 .then(CommandManager.literal("spiral")
                     .then(CommandManager.literal("l")
                         .then(CommandManager.argument("offset", StringArgumentType.word())
                         .then(CommandManager.argument("points", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1, 2); return 1;}))))
+                            .executes(context -> {SurveyCommand.run(context, 2, 20); return 1;}))))
                     .then(CommandManager.literal("r")
                         .then(CommandManager.argument("offset", StringArgumentType.word())
                         .then(CommandManager.argument("points", StringArgumentType.greedyString())
-                            .executes(context -> {SurveyCommand.run(context, 1, 2); return 1;})))))
+                            .executes(context -> {SurveyCommand.run(context, 2, 21); return 1;})))))
                 .then(CommandManager.argument("points", StringArgumentType.greedyString())
-                    .executes(context -> {SurveyCommand.run(context, 1, 1); return 1;})));
+                    .executes(context -> {SurveyCommand.run(context, 1, 0); return 1;})));
     }
 
-    private static int run(CommandContext<ServerCommandSource> context, int state, int parameterCount) {
+    private static int run(CommandContext<ServerCommandSource> context, int parameterCount, int surveyType) {
         ServerPlayerEntity player = context.getSource().getPlayer();
 
+        String surveyCommandInput = context.getInput();
+        player.sendMessageToClient(Text.literal("Command Entry: " + surveyCommandInput), false);
 
-        String CommandParams = context.getInput();
-
-        SurveyData.setSurveyState((IEntityDataSaver) player, state);
-        player.sendMessageToClient(Text.literal("Command Entry: " + CommandParams), false);
-
-        if (parameterCount > 0) {
+        if (parameterCount == 0) {
+            int state = 1 - SurveyData.getSurveyState((IEntityDataSaver) player);
+            SurveyData.setSurveyState((IEntityDataSaver) player, state);
+        } else {
             String[] surveyParametersStrings = parseSurveyCommand(context, parameterCount);
             if (Objects.equals(surveyParametersStrings[0], "error")) {
                 parseSurveyCommandError(player, surveyParametersStrings);
@@ -65,7 +63,13 @@ public class SurveyCommand {
             int[] surveyParametersPoints = Arrays.copyOfRange(surveyParametersTranslated, 1, surveyParametersTranslated.length);
             SurveyData.setSurveyOffset((IEntityDataSaver) player, surveyParametersOffset);
             SurveyData.setSurveyPoints((IEntityDataSaver) player, surveyParametersPoints);
+            SurveyData.setSurveyType((IEntityDataSaver) player, surveyType);
         }
+
+        player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
+        player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
+        player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
+        player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
 
         return 1;
     }
@@ -164,6 +168,7 @@ public class SurveyCommand {
         //debug.sendMessageToClient(Text.literal("Debug Parameters: " + Arrays.toString(parameterInts)), false);
         return parameterInts;
     }
+
 
 
 }
