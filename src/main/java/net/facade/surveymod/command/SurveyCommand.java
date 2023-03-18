@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 public class SurveyCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess commandRegistryAccess, CommandManager.RegistrationEnvironment registrationEnvironment) {
         dispatcher.register(CommandManager.literal("survey").executes(context -> {SurveyCommand.run(context, 0, -1); return 1;})
+                .then(CommandManager.literal("view")
+                    .executes(context -> {SurveyCommand.run(context, -1, -1); return 1;}))
                 .then(CommandManager.literal("scan")
                     .then(CommandManager.literal("h")
                         .then(CommandManager.argument("offset", StringArgumentType.word())
@@ -51,6 +53,11 @@ public class SurveyCommand {
         if (parameterCount == 0) {
             int state = 1 - SurveyData.getSurveyState((IEntityDataSaver) player);
             SurveyData.setSurveyState((IEntityDataSaver) player, state);
+        } else if (parameterCount == -1) {
+            player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
+            player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
+            player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
+            player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
         } else {
             String[] surveyParametersStrings = parseSurveyCommand(context, parameterCount);
             if (Objects.equals(surveyParametersStrings[0], "error")) {
@@ -65,11 +72,6 @@ public class SurveyCommand {
             SurveyData.setSurveyPoints((IEntityDataSaver) player, surveyParametersPoints);
             SurveyData.setSurveyType((IEntityDataSaver) player, surveyType);
         }
-
-        player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
-        player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
-        player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
-        player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
 
         return 1;
     }
