@@ -54,10 +54,16 @@ public class SurveyCommand {
             int state = 1 - SurveyData.getSurveyState((IEntityDataSaver) player);
             SurveyData.setSurveyState((IEntityDataSaver) player, state);
         } else if (parameterCount == -1) {
-            player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
-            player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
             player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
-            player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
+            player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
+            SurveyData.setSurveyDestinaiton((IEntityDataSaver) player);
+            player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
+            player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
+            //player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
+            //player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
+            //player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
+            //player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
+            //player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
         } else {
             String[] surveyParametersStrings = parseSurveyCommand(context, parameterCount);
             if (Objects.equals(surveyParametersStrings[0], "error")) {

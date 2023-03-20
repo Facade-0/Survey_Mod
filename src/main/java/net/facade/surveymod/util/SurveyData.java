@@ -9,12 +9,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.Vector;
-
 public class SurveyData {
 
     public static final  String SURVEYSTATE = "surveyState";                // int
     public static final  String SURVEYPOINTS = "surveyPoints";              // int[]
+    public static final  String SURVEYDESTINAITON = "surveyDestination";    // int[]
     public static final  String SURVEYOFFSET = "surveyOffset";              // int
     public static final  String SURVEYTYPE = "surveyType";                  // int
 
@@ -50,6 +49,36 @@ public class SurveyData {
     public static int[] getSurveyPoints(IEntityDataSaver player) {
         NbtCompound nbt = player.getPersistentData();
         return nbt.getIntArray(SURVEYPOINTS);
+    }
+
+    public static void setSurveyDestinaiton(IEntityDataSaver player) {
+        NbtCompound nbt = player.getPersistentData();
+        int[] currentDestination = new int[3];
+        int[] currentPoints = getSurveyPoints(player);
+
+        if (currentPoints.length == 0) {
+            currentDestination = new int[0];
+            nbt.putIntArray(SURVEYDESTINAITON, currentDestination);
+        } else if (currentPoints.length == 3) {
+            currentDestination = currentPoints;
+            currentPoints = new int[0];
+            nbt.putIntArray(SURVEYPOINTS, currentPoints);
+            nbt.putIntArray(SURVEYDESTINAITON, currentDestination);
+            syncSurvey((ServerPlayerEntity) player, SURVEYPOINTS, currentPoints);
+        } else {
+            System.arraycopy(currentPoints, 0, currentDestination, 0, 3);
+            int[] newPoints = new int[currentPoints.length - 3];
+            System.arraycopy(currentPoints, 3, newPoints, 0, newPoints.length);
+            nbt.putIntArray(SURVEYPOINTS, newPoints);
+            nbt.putIntArray(SURVEYDESTINAITON, currentDestination);
+            syncSurvey((ServerPlayerEntity) player, SURVEYPOINTS, newPoints);
+        }
+        syncSurvey((ServerPlayerEntity) player, SURVEYDESTINAITON, currentDestination);
+    }
+
+    public static int[] getSurveyDestination(IEntityDataSaver player) {
+        NbtCompound nbt = player.getPersistentData();
+        return nbt.getIntArray(SURVEYDESTINAITON);
     }
 
     public static void setSurveyOffset(IEntityDataSaver player, int offset) {
@@ -90,7 +119,7 @@ public class SurveyData {
         return player.getPos();
     }
 
-    public static Vec3d setPlayerDirection(ClientPlayerEntity player, int[] destination) {
+    public static Vec3d getSurveyDirection(ClientPlayerEntity player, int[] destination) {
         // destination - position -> unit
         Vec3d currentPoint = getPlayerPos(player);
         Vec3d destinationPoint = new Vec3d(destination[0], destination[1], destination[2]);
