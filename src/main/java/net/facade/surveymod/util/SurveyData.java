@@ -14,6 +14,7 @@ public class SurveyData {
     public static final  String SURVEYSTATE = "surveyState";                // int
     public static final  String SURVEYPOINTS = "surveyPoints";              // int[]
     public static final  String SURVEYDESTINAITON = "surveyDestination";    // int[]
+    public static final  float  SURVEYTOLERANCE = 0.25f;                    // float
     public static final  String SURVEYOFFSET = "surveyOffset";              // int
     public static final  String SURVEYTYPE = "surveyType";                  // int
 
@@ -51,7 +52,7 @@ public class SurveyData {
         return nbt.getIntArray(SURVEYPOINTS);
     }
 
-    public static void setSurveyDestinaiton(IEntityDataSaver player) {
+    public static void setSurveyDestination(IEntityDataSaver player) {
         NbtCompound nbt = player.getPersistentData();
         int[] currentDestination = new int[3];
         int[] currentPoints = getSurveyPoints(player);
@@ -123,7 +124,16 @@ public class SurveyData {
         // destination - position -> unit
         Vec3d currentPoint = getPlayerPos(player);
         Vec3d destinationPoint = new Vec3d(destination[0], destination[1], destination[2]);
-        return currentPoint.subtract(destinationPoint).normalize();
+        //return currentPoint.subtract(destinationPoint).normalize();
+        return destinationPoint.subtract(currentPoint).normalize();
+    }
+
+    public static double getSurveyPositionPointDifference(ClientPlayerEntity player) {
+        int[] destinationInts = getSurveyDestination((IEntityDataSaver) player);
+        Vec3d destination = new Vec3d(destinationInts[0], destinationInts[1], destinationInts[2]);
+        Vec3d position = SurveyData.getPlayerPos((ClientPlayerEntity) player);
+        Vec3d difference = position.subtract(destination);
+        return Math.sqrt((difference.x * difference.x) + (difference.y * difference.y) + (difference.z * difference.z));
     }
 
     private static void syncSurvey(ServerPlayerEntity player, String dataID, int[] dataValues) {

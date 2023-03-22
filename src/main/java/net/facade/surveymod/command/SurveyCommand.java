@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.facade.surveymod.util.IEntityDataSaver;
 import net.facade.surveymod.util.SurveyData;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -54,16 +55,12 @@ public class SurveyCommand {
             int state = 1 - SurveyData.getSurveyState((IEntityDataSaver) player);
             SurveyData.setSurveyState((IEntityDataSaver) player, state);
         } else if (parameterCount == -1) {
+            player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
+            player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
             player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
             player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
-            SurveyData.setSurveyDestinaiton((IEntityDataSaver) player);
-            player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
-            player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
-            //player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
-            //player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
-            //player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
-            //player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
-            //player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
+            player.sendMessageToClient(Text.literal("Current Position: " + player.getPos()), false);
+            player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
         } else {
             String[] surveyParametersStrings = parseSurveyCommand(context, parameterCount);
             if (Objects.equals(surveyParametersStrings[0], "error")) {
@@ -76,6 +73,7 @@ public class SurveyCommand {
             int[] surveyParametersPoints = Arrays.copyOfRange(surveyParametersTranslated, 1, surveyParametersTranslated.length);
             SurveyData.setSurveyOffset((IEntityDataSaver) player, surveyParametersOffset);
             SurveyData.setSurveyPoints((IEntityDataSaver) player, surveyParametersPoints);
+            SurveyData.setSurveyDestination((IEntityDataSaver) player);
             SurveyData.setSurveyType((IEntityDataSaver) player, surveyType);
         }
 
