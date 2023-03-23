@@ -110,7 +110,7 @@ public class SurveyCommand {
                 stringArrayOfAllPoints[i] = pointXZ[0] + "," + previousY + "," + pointXZ[1];
                 parameterArray.add(stringArrayOfAllPoints[i]);
             } else {
-                Pattern patternThreeNumbers = Pattern.compile("^\\d+,\\d+,\\d+$", Pattern.CASE_INSENSITIVE);
+                Pattern patternThreeNumbers = Pattern.compile("^-?\\d+,-?\\d+,-?\\d+$", Pattern.CASE_INSENSITIVE);
                 Matcher matcherThreeNumbers = patternThreeNumbers.matcher(stringArrayOfAllPoints[i]);
                 if (!matcherThreeNumbers.find()) {return new String[] {"error", "Invalid Coordinates", stringArrayOfAllPoints[i]};}
                 parameterArray.add(stringArrayOfAllPoints[i]);

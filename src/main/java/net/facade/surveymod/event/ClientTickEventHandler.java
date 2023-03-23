@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Arrays;
 
@@ -28,7 +29,7 @@ public class ClientTickEventHandler implements ClientTickEvents.EndTick {
             SurveyData.setSurveyDestination((IEntityDataSaver) player);
         }
         player.sendMessage(Text.literal(String.valueOf(positionPointDifference)), false);
-        //Vec3d direction = SurveyData.getSurveyDirection((ClientPlayerEntity) player, destination);
-        //player.applyMovementInput(new Vec3d(direction.x, direction.y, direction.z), 10);
+        Vec3d direction = SurveyData.getSurveyDirection((IEntityDataSaver) player, destination);
+        player.applyMovementInput(new Vec3d(direction.x, direction.y, direction.z), 10);
     }
 }
