@@ -7,7 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.Arrays;
 
@@ -23,14 +22,13 @@ public class ClientTickEventHandler implements ClientTickEvents.EndTick {
         int[] destination = SurveyData.getSurveyDestination((IEntityDataSaver) player);
         if (destination.length == 0) { return; }
 
-        double positionPointDifference = SurveyData.getSurveyPositionPointDifference((ClientPlayerEntity) player);
-        if (positionPointDifference > SurveyData.SURVEYTOLERANCE) {
-            player.sendMessage(Text.literal(String.valueOf(positionPointDifference)), false);
-            //Vec3d direction = SurveyData.getSurveyDirection((ClientPlayerEntity) player, destination);
-            //player.applyMovementInput(new Vec3d(direction.x, direction.y, direction.z), 10);
-        } else {
+        double positionPointDifference = SurveyData.getSurveyPositionPointDifference((IEntityDataSaver) player);
+        if (positionPointDifference <= SurveyData.SURVEYTOLERANCE) {
             player.sendMessage(Text.literal("Done!"), false);
-            //SurveyData.setSurveyDestination((IEntityDataSaver) player);
+            SurveyData.setSurveyDestination((IEntityDataSaver) player);
         }
+        player.sendMessage(Text.literal(String.valueOf(positionPointDifference)), false);
+        //Vec3d direction = SurveyData.getSurveyDirection((ClientPlayerEntity) player, destination);
+        //player.applyMovementInput(new Vec3d(direction.x, direction.y, direction.z), 10);
     }
 }

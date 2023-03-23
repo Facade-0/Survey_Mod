@@ -16,7 +16,7 @@ public class SurveyMod implements ModInitializer {
 	public void onInitialize() {
 
 		ModRegistries.registerCommands();
-		//ModMessages.registerC2SPackets();
+		ModMessages.registerC2SPackets();
 
 		//ServerTickEvents.END_SERVER_TICK.register(new ServerTickEventHandler());
 	}

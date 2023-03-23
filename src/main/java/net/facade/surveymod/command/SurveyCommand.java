@@ -55,12 +55,10 @@ public class SurveyCommand {
             int state = 1 - SurveyData.getSurveyState((IEntityDataSaver) player);
             SurveyData.setSurveyState((IEntityDataSaver) player, state);
         } else if (parameterCount == -1) {
-            player.sendMessageToClient(Text.literal("Survey State: " + SurveyData.getSurveyState((IEntityDataSaver) player)), false);
-            player.sendMessageToClient(Text.literal("Survey Offset: " + SurveyData.getSurveyOffset((IEntityDataSaver) player)), false);
-            player.sendMessageToClient(Text.literal("Survey Points: " + Arrays.toString(SurveyData.getSurveyPoints((IEntityDataSaver) player))), false);
-            player.sendMessageToClient(Text.literal("Survey Destination: " + Arrays.toString(SurveyData.getSurveyDestination((IEntityDataSaver) player))), false);
-            player.sendMessageToClient(Text.literal("Current Position: " + player.getPos()), false);
-            player.sendMessageToClient(Text.literal("Survey Type: " + SurveyData.getSurveyType((IEntityDataSaver) player)), false);
+            String[] surveyInfo = SurveyData.getSurveyInfo((IEntityDataSaver) player);
+            for (int i = 0; i < surveyInfo.length; i += 2) {
+                player.sendMessageToClient(Text.literal(surveyInfo[i] + surveyInfo[i + 1]), false);
+            }
         } else {
             String[] surveyParametersStrings = parseSurveyCommand(context, parameterCount);
             if (Objects.equals(surveyParametersStrings[0], "error")) {
