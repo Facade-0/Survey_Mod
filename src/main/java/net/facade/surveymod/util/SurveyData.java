@@ -159,7 +159,7 @@ public class SurveyData {
         }
     }
 
-    public static String[] getSurveyInfo(IEntityDataSaver player) {
+    public static String getSurveyInfo(IEntityDataSaver player) {
         int state = getSurveyState(player);
         int[] points = getSurveyPoints(player);
         int[] destination = getSurveyDestination(player);
@@ -171,10 +171,11 @@ public class SurveyData {
         Vec3d positionVector = getPlayerPos(player);
         String[] position = {df_obj.format(positionVector.x), df_obj.format(positionVector.y), df_obj.format(positionVector.z)};
 
-        String[] surveyInfo = {"Survey State: ", String.valueOf(state), "Survey Points: ", Arrays.toString(points),
-                               "Survey Destination: ", Arrays.toString(destination), "Current Position: ", Arrays.toString(position),
-                               "Survey Type: ", String.valueOf(type), "Survey Offset: ", String.valueOf(offset),
-                               "Survey Tolerance: ", String.valueOf(tolerance)};
+        String surveyInfo = "Survey Info:"+
+                            "\nState:  " + state + "    Type:  " + type + "    Offset:  " + offset + "    Tolerance:  " + tolerance +
+                            "\nPosition:  " + Arrays.toString(position) + "    Destination:  " + Arrays.toString(destination) +
+                            "\nSurvey Points:  " + Arrays.toString(points);
+
         return surveyInfo;
     }
 }
