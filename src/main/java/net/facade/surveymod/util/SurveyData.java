@@ -8,7 +8,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 
 import java.text.DecimalFormat;
@@ -124,9 +123,11 @@ public class SurveyData {
 
     public static Vec3d getPlayerPos(IEntityDataSaver player) {
         try {
-            return ((ClientPlayerEntity) player).getPos();
+            Vec3d fabricPlayerPos = ((ClientPlayerEntity) player).getPos();
+            return new Vec3d(fabricPlayerPos.z, fabricPlayerPos.y, fabricPlayerPos.x);
         } catch (Exception e) {
-            return ((ServerPlayerEntity) player).getPos();
+            Vec3d fabricPlayerPos = ((ServerPlayerEntity) player).getPos();
+            return new Vec3d(fabricPlayerPos.z, fabricPlayerPos.y, fabricPlayerPos.x);
         }
     }
 
@@ -134,8 +135,22 @@ public class SurveyData {
         // destination - position -> unit
         Vec3d currentPoint = getPlayerPos(player);
         Vec3d destinationPoint = new Vec3d(destination[0], destination[1], destination[2]);
-        //return currentPoint.subtract(destinationPoint).normalize();
-        return destinationPoint.subtract(currentPoint).normalize();
+        Vec3d playerToPoint = destinationPoint.subtract(currentPoint);
+        Vec3d playerToPointDirection = playerToPoint.normalize();
+
+        int playerYaw = (int) -((ClientPlayerEntity)player).getBodyYaw();
+        int playerYawUnit = (Math.abs(playerYaw) > 360) ? playerYaw % 360 : playerYaw;
+        int playerDirection = (playerYawUnit < 0 ) ? Math.abs(playerYawUnit + 360) : playerYawUnit;
+
+        double playerYawCos = Math.cos(Math.toRadians(90-playerDirection));
+        double playerYawSin = Math.sin(Math.toRadians(90-playerDirection));
+
+        double directionRelativeX = -((playerToPointDirection.x * playerYawCos) - (playerToPointDirection.z * playerYawSin));
+        double directionRelativeZ = ((playerToPointDirection.x * playerYawSin) + (playerToPointDirection.z * playerYawCos));
+
+        Vec3d direction = new Vec3d(directionRelativeX, playerToPoint.y, directionRelativeZ);
+
+        return direction;
     }
 
     public static double getSurveyPositionPointDifference(IEntityDataSaver player) {

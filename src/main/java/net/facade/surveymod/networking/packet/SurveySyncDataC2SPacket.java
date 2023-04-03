@@ -15,7 +15,6 @@ public class SurveySyncDataC2SPacket {
                                PacketByteBuf buf, PacketSender responseSender) {
         String dataID = buf.readString();
         int[] dataValues = buf.readIntArray();
-        player.sendMessageToClient(Text.literal("We're in"), false);
 
         switch (dataValues.length) {
             case 0:
